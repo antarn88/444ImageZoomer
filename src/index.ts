@@ -1,7 +1,7 @@
 class ImageZoomer {
-  imageUrl: string | null = null;
-  imageContainer: HTMLDivElement | null = null;
-  article: HTMLElement | null = null;
+  imageUrl: string | null;
+  imageContainer: HTMLDivElement | null;
+  article: HTMLElement | null;
 
   constructor() {
     this.init();
