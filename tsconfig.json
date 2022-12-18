@@ -1,0 +1,11 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "ES2022",
+    "outDir": "build",
+    "strict": true,
+    "lib": ["DOM", "ES2022"]
+  },
+
+  "include": ["./src/*.ts"]
+}
