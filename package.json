@@ -1,7 +1,7 @@
 {
   "name": "444imagezoomer",
   "version": "1.0.0",
-  "main": "./src/index.ts",
+  "main": "./src/444.ts",
   "license": "MIT",
   "scripts": {
     "start": "tsc -p ./tsconfig.json --watch",
