@@ -1,4 +1,4 @@
-class FourFourFour {
+export class FourFourFour {
   imageUrl: string | null;
   imageContainer: HTMLDivElement | null;
   article: HTMLElement | null;
@@ -91,5 +91,3 @@ class FourFourFour {
     document.addEventListener('keydown', (event: KeyboardEvent) => this.keyDownAction(event));
   }
 }
-
-new FourFourFour();
