@@ -3,6 +3,9 @@ export class Telex {
   imageContainer: HTMLDivElement | null;
   fullsizeImgUrl: string | null;
 
+  imageContainerWidth = 600;
+  imageContainerHeight = 405;
+
   constructor() {
     this.init();
   }
@@ -17,22 +20,49 @@ export class Telex {
     document.addEventListener('keydown', (event: KeyboardEvent) => this.keyDownAction(event));
   }
 
-  setPreviewImageContainer(): HTMLDivElement {
-    this.imageContainer = document.createElement('div');
-    this.imageContainer.classList.add('image-zoomer');
-    this.imageContainer.style.zIndex = '10';
-    this.imageContainer.style.position = 'absolute';
-    this.imageContainer.style.width = `600px`;
-    this.imageContainer.style.height = `405px`;
-    this.imageContainer.style.top = '-190px';
-    this.imageContainer.style.left = '3px';
-    this.imageContainer.style.border = '2px solid #777777';
-    this.imageContainer.style.backgroundColor = 'white';
-    this.imageContainer.style.padding = '3px';
-    this.imageContainer.style.paddingBottom = '0';
-    this.imageContainer.style.boxShadow = 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px';
-    this.imageContainer.style.borderRadius = '5px';
-    return this.imageContainer;
+  createImageContainer(): HTMLDivElement {
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('image-zoomer');
+    imageContainer.style.zIndex = '10';
+    imageContainer.style.position = 'absolute';
+    imageContainer.style.width = `${this.imageContainerWidth}px`;
+    imageContainer.style.height = `${this.imageContainerHeight}px`;
+    imageContainer.style.top = '-190px';
+    imageContainer.style.left = '3px';
+    imageContainer.style.border = '2px solid #777777';
+    imageContainer.style.backgroundColor = 'white';
+    imageContainer.style.padding = '3px';
+    imageContainer.style.paddingBottom = '0';
+    imageContainer.style.boxShadow = 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px';
+    imageContainer.style.borderRadius = '5px';
+    return imageContainer;
+  }
+
+  // TODO Nem tökéletes!
+  setPreviewImageContainer(): void {
+    const observer = new IntersectionObserver((entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry: IntersectionObserverEntry) => {
+        if (this.imageContainer) {
+          const ratio = entry.intersectionRatio;
+          if (ratio > 0 && ratio < 1) {
+            // Covered from top
+            if (entry.boundingClientRect.top < 0) {
+              this.imageContainer.style.top = '100px';
+              // Covered from bottom
+            } else if (entry.boundingClientRect.bottom > window.innerHeight) {
+              this.imageContainer.style.top = '-200px';
+            }
+            // Not covered
+          } else if (ratio === 1) {
+            // this.imageContainer.style.top = '-190px';
+          }
+        }
+      });
+    });
+
+    if (this.imageContainer) {
+      observer.observe(this.imageContainer);
+    }
   }
 
   mouseOverAction(event: MouseEvent): void {
@@ -60,7 +90,7 @@ export class Telex {
         previewImageElement.setAttribute('src', previewImgUrl);
         previewImageElement.setAttribute('alt', 'Zoomed article photo');
         previewImageElement.onload = () => {
-          this.imageContainer = this.setPreviewImageContainer();
+          this.imageContainer = this.createImageContainer();
           this.imageContainer.insertAdjacentElement('beforeend', previewImageElement);
           this.parentElement = element.parentNode?.parentNode?.parentNode?.parentNode?.querySelector(
             '.list__item__info'

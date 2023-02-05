@@ -9,16 +9,13 @@ export class FourFourFour {
   }
 
   destroyFourFourFourZoomer(): void {
-    if (this.imageContainer) {
-      this.articleParent?.removeChild(this.imageContainer);
-    }
-    this.imageContainer?.remove();
-    this.imageContainer = null;
-
     if (this.article) {
       this.article.style.height = 'unset';
     }
 
+    const allImageZoomers = document.querySelectorAll('.image-zoomer');
+    allImageZoomers.forEach((element: Element) => element.remove());
+    this.imageContainer = null;
     this.article = null;
     this.articleParent = null;
     this.imageUrl = null;
@@ -33,16 +30,15 @@ export class FourFourFour {
     this.imageContainer.style.bottom = '350px';
     this.imageContainer.style.border = '2px solid #777777';
     this.imageContainer.style.backgroundColor = 'white';
-
     this.imageContainer.style.padding = '3px';
     this.imageContainer.style.paddingBottom = '0';
     this.imageContainer.style.boxShadow = 'rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px';
     this.imageContainer.style.borderRadius = '5px';
-
     return this.imageContainer;
   }
 
   mouseOverAction(event: MouseEvent): void {
+    this.destroyFourFourFourZoomer();
     const element = event.composedPath()[0] as HTMLElement;
     const elementType = (event.composedPath()[0] as HTMLElement).nodeName;
     if (elementType === 'IMG') {
@@ -56,16 +52,17 @@ export class FourFourFour {
 
       if (previewImageUrl) {
         bigImageElement.setAttribute('src', previewImageUrl);
+        bigImageElement.onload = () => {
+          this.imageContainer = this.setImageContainer();
+
+          if (this.articleParent) {
+            this.articleParent.style.height = `${articleGrandParentHeight}px`;
+          }
+
+          this.imageContainer.insertAdjacentElement('beforeend', bigImageElement);
+          this.articleParent?.insertAdjacentElement('beforeend', this.imageContainer);
+        };
       }
-
-      this.imageContainer = this.setImageContainer();
-
-      if (this.articleParent) {
-        this.articleParent.style.height = `${articleGrandParentHeight}px`;
-      }
-
-      this.imageContainer.insertAdjacentElement('beforeend', bigImageElement);
-      this.articleParent?.insertAdjacentElement('beforeend', this.imageContainer);
     }
   }
 
