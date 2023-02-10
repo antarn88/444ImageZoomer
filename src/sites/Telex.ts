@@ -3,8 +3,10 @@ export class Telex {
   imageContainer: HTMLDivElement | null;
   fullsizeImgUrl: string | null;
 
-  imageContainerWidth = 600;
-  imageContainerHeight = 405;
+  imageContainerWidth: number;
+  imageContainerHeight: number;
+  initialImageContainerWidth = 600;
+  initialImageContainerHeight = 405;
 
   constructor() {
     this.init();
@@ -90,6 +92,17 @@ export class Telex {
         previewImageElement.setAttribute('src', previewImgUrl);
         previewImageElement.setAttribute('alt', 'Zoomed article photo');
         previewImageElement.onload = () => {
+          const previewImageElementWidth = previewImageElement.naturalWidth;
+          const previewImageElementHeight = previewImageElement.naturalHeight;
+
+          if (previewImageElementWidth < this.initialImageContainerWidth) {
+            this.imageContainerWidth = previewImageElementWidth;
+            this.imageContainerHeight = previewImageElementHeight + 3;
+          } else {
+            this.imageContainerWidth = this.initialImageContainerWidth;
+            this.imageContainerHeight = this.initialImageContainerHeight;
+          }
+
           this.imageContainer = this.createImageContainer();
           this.imageContainer.insertAdjacentElement('beforeend', previewImageElement);
           this.parentElement = element.parentNode?.parentNode?.parentNode?.parentNode?.querySelector(
